@@ -111,8 +111,6 @@ license: "CC BY"
 
 ![Создание производных форматов](image/21.png){#fig-022 width=70%}
 
-{{< include ../project/markdown/01_exponential_growth/01_exponential_growth.qmd >}}
-
 Включим поддержку кода julia: ([рис. @fig-023]).
 
 ![Поддержка кода julia](image/22.png){#fig-023 width=70%}
@@ -125,7 +123,6 @@ license: "CC BY"
 
 ![Создание производных форматов](image/24.png){#fig-025 width=70%}
 
-{{< include ../project/markdown/02_exponential_growth/02_exponential_growth.qmd >}}
 
 
 Графики после выполнения второго скрипта: ([рис. @fig-026]).
