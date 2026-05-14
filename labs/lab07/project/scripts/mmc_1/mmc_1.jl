@@ -1,0 +1,42 @@
+using StableRNGs
+using Distributions
+using ConcurrentSim
+using ResumableFunctions
+
+#set simulation parameters
+rng = StableRNG(123)
+num_customers = 10 # total number of customers generated
+
+num_servers = 2 # number of servers
+mu = 1.0 / 2 # service rate
+lam = 0.9 # arrival rate
+arrival_dist = Exponential(1 / lam) # interarrival time distribution
+service_dist = Exponential(1 / mu) # service time distribution
+
+@resumable function customer(
+    env::Environment,
+    server::Resource,
+    id::Integer,
+    t_a::Float64,
+    d_s::Distribution,
+)
+    @yield timeout(env, t_a) # customer arrives
+    println("Customer $id arrived: ", now(env))
+    @yield request(server) # customer starts service
+    println("Customer $id entered service: ", now(env))
+    @yield timeout(env, rand(rng, d_s)) # server is busy
+    @yield unlock(server) # customer exits service
+    println("Customer $id exited service: ", now(env))
+end
+
+function setup_and_run()
+    sim = Simulation() # initialize simulation environment
+    server = Resource(sim, num_servers) # initialize servers
+    arrival_time = 0.0
+    for i = 1:num_customers # initialize customers
+        arrival_time += rand(rng, arrival_dist)
+        @process customer(sim, server, i, arrival_time, service_dist)
+    end
+    run(sim) # run simulation
+end
+setup_and_run()
